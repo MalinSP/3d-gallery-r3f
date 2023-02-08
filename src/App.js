@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.css'
+import { Canvas } from '@react-three/fiber'
+import styled from 'styled-components'
+import Planes from './components/Planes'
+import { Scroll, ScrollControls } from '@react-three/drei'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <CanvasContainerWrapper>
+      <Canvas camera={{ position: [0, 0, 28], near: 3, far: 15 }}>
+        <ambientLight intensity={0.25} />
+        <pointLight position={[1, 2, 0]} />
+        <ScrollControls infinite>
+          <Scroll>
+            <Planes />
+          </Scroll>
+        </ScrollControls>
+
+        {/* <TrackballControls /> */}
+      </Canvas>
+    </CanvasContainerWrapper>
+  )
 }
 
-export default App;
+const CanvasContainerWrapper = styled.section`
+  width: 100%;
+  height: 100%;
+  position: fixed;
+`
+
+export default App
