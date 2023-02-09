@@ -7,8 +7,8 @@ import { Scroll, ScrollControls } from '@react-three/drei'
 function App() {
   return (
     <CanvasContainerWrapper>
-      <Canvas camera={{ position: [0, 0, 28], near: 3, far: 15 }}>
-        <ambientLight intensity={0.25} />
+      <Canvas camera={{ position: [0, 0, 28], near: 3, far: 10 }}>
+        <ambientLight intensity={1} />
         <pointLight position={[1, 2, 0]} />
         <ScrollControls infinite>
           <Scroll>
