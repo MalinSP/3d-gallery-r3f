@@ -9,49 +9,56 @@ import {
   useSpringValue,
   useSpringRef,
   easeInElastic,
+  config,
 } from '@react-spring/three'
+import * as THREE from 'three'
 
 const Plane = ({ picture, index }) => {
   const scroll = useScroll()
+  const meshRef = useRef()
 
-  const [props, api] = useSpring(
+  const [springs, api] = useSpring(
     () => ({
-      from: { opacity: 0 },
-      to: { opacity: 1 },
+      from: { scale: 0 },
+      to: { scale: 1 },
       config: {
         duration: 1000,
-        mass: 2,
-        friction: 5,
-        tension: 80,
-        easing: easeInElastic,
       },
     }),
     []
   )
 
-  const ref = useIntersect((visible) =>
-    visible === true
-      ? api.start({
-          from: {
-            opacity: 0,
-          },
-          to: {
-            opacity: 1,
-          },
-        })
-      : api.start({
-          from: {
-            opacity: 1,
-          },
-          to: {
-            opacity: 0,
-          },
-        })
-  )
+  const ref = useIntersect((isVisible) => {
+    isVisible === true &&
+      api.start({
+        from: {
+          scale: 0,
+        },
+        to: {
+          scale: 1,
+        },
+      })
+  })
 
   useFrame((state, delta) => {
     const offset = 1 - scroll.offset
     state.camera.position.set(0, 0, offset * 32)
+    let distance = state.camera.position.distanceTo(meshRef.current.position)
+    if (distance < 5) {
+      meshRef.current.material.opacity = THREE.MathUtils.damp(
+        meshRef.current.material.opacity,
+        0,
+        5,
+        delta * 0.25
+      )
+    } else {
+      meshRef.current.material.opacity = THREE.MathUtils.damp(
+        meshRef.current.material.opacity,
+        1,
+        5,
+        delta * 0.25
+      )
+    }
   })
   const positions = useMemo(() => {
     const randomX = Math.random() < 0.5 ? 1.5 : 0
@@ -61,12 +68,18 @@ const Plane = ({ picture, index }) => {
 
   return (
     <a.mesh
-      ref={ref}
-      opacity={props.opacity}
+      ref={meshRef}
       position={[positions.randomX, positions.randomY, index * 6]}
+      scale={springs.scale}
     >
       <planeGeometry args={[3, 5]} />
-      <a.meshBasicMaterial map={picture} transparent opacity={props.opacity} />
+      <a.meshBasicMaterial
+        ref={ref}
+        map={picture}
+        transparent
+        opacity={springs.opacity}
+      />
+      {/* <a.mesh ref={ref} /> */}
     </a.mesh>
   )
 }
