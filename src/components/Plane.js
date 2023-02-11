@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber'
 import { useSpring, a } from '@react-spring/three'
 import * as THREE from 'three'
 
-const Plane = ({ picture, index, name, setName }) => {
+const Plane = ({ picture, index, setName }) => {
   const scroll = useScroll()
   const meshRef = useRef()
   const namesArr = ['image1', 'image2', 'image3', 'image4', 'image5']
@@ -37,6 +37,7 @@ const Plane = ({ picture, index, name, setName }) => {
     const offsetRounded = Math.round(scroll.offset * 5)
     setName(namesArr[offsetRounded])
     state.camera.position.set(0, 0, offset * 31)
+    state.camera.lookAt(new THREE.Vector3(2, 0, 0))
     let distance = state.camera.position.distanceTo(meshRef.current.position)
     if (distance < 5) {
       meshRef.current.material.opacity = THREE.MathUtils.damp(
