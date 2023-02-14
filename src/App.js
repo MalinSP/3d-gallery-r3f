@@ -3,20 +3,22 @@ import React, { useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import styled from 'styled-components'
 import Planes from './components/Planes'
-import { Scroll, ScrollControls } from '@react-three/drei'
+import { Scroll, ScrollControls, CycleRaycast } from '@react-three/drei'
 
 function App() {
+  const [{ objects, cycle }, set] = useState({ objects: [], cycle: 0 })
   const [name, setName] = useState('')
   return (
     <CanvasContainerWrapper>
-      <Canvas camera={{ position: [0, 0, 28], near: 3, far: 10 }}>
+      <Canvas camera={{ position: [-2, 0, 28], near: 3, far: 15 }}>
         <ambientLight intensity={1} />
         <pointLight position={[1, 2, 0]} />
-        <ScrollControls infinite damping={0.5} speed={0.25}>
+        <ScrollControls infinite>
           <Scroll>
             <Planes name={name} setName={setName} />
           </Scroll>
         </ScrollControls>
+        {/* <CycleRaycast onChanged={(objects, cycle) => set({ objects, cycle })} /> */}
       </Canvas>
       {name && <ImageTitle title={name} />}
     </CanvasContainerWrapper>
